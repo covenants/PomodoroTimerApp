@@ -13,6 +13,7 @@ Abbreviations: **PASS** = executed and observed; **UNIT** = proven by a JVM unit
 | T-003 | Resume then advance to due | **PASS / UNIT** | `resume creates a new deadline and does not count paused time as focus`; device 5s countdown and 1m focus completed |
 | T-004 | Deliver duplicate completion callbacks | **PASS / UNIT** | `completing twice is idempotent`; repository deduplicates via `session_event` primary key |
 | T-005 | Rotate / recreate Activity 5× | **NOT RUN** | No explicit rotation script; state is Room-backed and ViewModel-scoped |
+| T-005b | Process death / force-stop mid-session | **PASS** | Force-stopped a 30 s countdown, relaunched: remaining restored correctly and the live screen opened automatically |
 | T-006 | Change wall clock ±2h during same boot | **PASS / UNIT** | `same boot wall clock changes do not affect the countdown`; boot identity is `boot_id`/`BOOT_COUNT` |
 | T-007 | Reboot during active countdown | **PASS / UNIT** | `reboot falls back to the wall deadline and never goes negative`; no physical reboot test |
 | T-008 | Lock device / power saving | **PARTIAL** | Device screen-off/backgrounded for 12 s; remaining was accurate and notification showed a native chronometer. Doze and OEM battery managers not exercised |
@@ -45,6 +46,10 @@ adb shell am start -n com.covenants.pomodorotimer/.MainActivity   Displayed
 - Background: notification title `Focus · Deep Work`, `showChronometer=true`,
   `chronometerCountDown=true`, text `Finishes at 1:03 PM`.
 - Paused background: `showChronometer=false`, text `Paused · 00:29 remaining`.
+- Process death: force-stopped a 30 s countdown, relaunched, and the live screen returned with `00:17`
+  remaining before completion.
+- Foreground watchdog: the same countdown reached `00:00`, showed “Time's up.”, and wrote a completion
+  history row while the app was visible.
 - No crash or ANR appeared in `adb logcat` during the exercised flows.
 
 ## Still required before a public release

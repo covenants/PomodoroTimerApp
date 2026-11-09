@@ -53,10 +53,12 @@ Kotlin + Jetpack Compose + Material 3 + Room + DataStore, offline-first, no acco
 | Active focus | `docs/screenshots/02-active-focus.png` |
 | Paused | `docs/screenshots/02d-paused.png` |
 | Background resume | `docs/screenshots/02c-background-resume.png` |
+| Process-death restore | `docs/screenshots/02e-process-death-restore.png` |
 | Break ready | `docs/screenshots/02b-break-ready.png` |
 | Quick Timer | `docs/screenshots/03-quick-timer.png` |
 | Countdown running | `docs/screenshots/04-active-countdown.png` |
 | Countdown complete | `docs/screenshots/04-active-countdown-complete.png` |
+| Foreground watchdog | `docs/screenshots/04b-watchdog-complete.png` |
 | Tasks | `docs/screenshots/05-tasks.png` |
 | Insights | `docs/screenshots/06-insights.png` |
 | Preferences | `docs/screenshots/07-settings.png` |
@@ -147,6 +149,8 @@ No `AccessibilityService`, `QUERY_ALL_PACKAGES`, `UsageStats`, location, contact
 | 1-minute focus completion | **PASS** — “Break ready”, one completed work stage |
 | Background screen-off timing | **PASS** — accurate remaining after 12 seconds off-screen; native chronometer notification |
 | Pause while backgrounded | **PASS** — notification shows “Paused · 00:29 remaining” |
+| Process death + relaunch | **PASS** — force-stopped mid-countdown; relaunch restored and auto-opened the live screen with the correct remaining time |
+| Foreground watchdog completion | **PASS** — 30-second countdown reached 00:00 and completed while visible, without waiting for an alarm |
 | Populated insights | **PASS** — 1m, 1 session, 1-day streak |
 | Physical-device OEM matrix | **NOT RUN** — needs Pixel/Samsung/Xiaomi-class hardware |
 | Notification-denied path | **NOT RUN** as a device test |
