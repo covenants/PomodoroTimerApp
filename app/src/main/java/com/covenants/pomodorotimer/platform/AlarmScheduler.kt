@@ -31,20 +31,34 @@ class AlarmScheduler(
         }
         val remaining = TimerEngine.remainingMs(snapshot, clock)
         if (remaining <= 0L) return
-        val triggerAt = clock.wallClockMs() + remaining
+        // ELAPSED_REALTIME_WAKEUP is immune to manual or network wall-clock changes. Reboots
+        // cancel this alarm; BootReceiver reschedules from the wall-clock fallback.
+        val triggerAtElapsed = clock.elapsedRealtimeMs() + remaining
         val operation = pendingIntent(snapshot)
 
         val canExact = Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()
         try {
             if (canExact) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, operation)
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    triggerAtElapsed,
+                    operation,
+                )
             } else {
-                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, operation)
+                alarmManager.setAndAllowWhileIdle(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    triggerAtElapsed,
+                    operation,
+                )
             }
         } catch (_: SecurityException) {
             // Permission can be revoked between the check and the call.
             runCatching {
-                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, operation)
+                alarmManager.setAndAllowWhileIdle(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    triggerAtElapsed,
+                    operation,
+                )
             }
         }
     }

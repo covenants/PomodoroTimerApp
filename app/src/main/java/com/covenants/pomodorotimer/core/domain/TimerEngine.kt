@@ -51,6 +51,7 @@ object TimerEngine {
             bootMarker = if (running) clock.bootMarker() else null,
             accumulatedActiveMs = 0L,
             activeStartedElapsedMs = if (running) nowElapsed else null,
+            activeStartedWallMs = if (running) nowWall else null,
             taskId = taskId,
             taskTitle = taskTitle,
             startedWallMs = nowWall,
@@ -77,6 +78,7 @@ object TimerEngine {
         bootMarker = clock.bootMarker(),
         accumulatedActiveMs = 0L,
         activeStartedElapsedMs = clock.elapsedRealtimeMs(),
+        activeStartedWallMs = clock.wallClockMs(),
         taskId = taskId,
         taskTitle = taskTitle,
         startedWallMs = clock.wallClockMs(),
@@ -108,7 +110,17 @@ object TimerEngine {
 
     fun stopwatchElapsedMs(snapshot: TimerSnapshot, clock: TimeSource): Long {
         val runningPart = if (snapshot.status == TimerStatus.RUNNING) {
-            snapshot.activeStartedElapsedMs?.let { (clock.elapsedRealtimeMs() - it).coerceAtLeast(0L) } ?: 0L
+            if (isSameBoot(snapshot.bootMarker, clock.bootMarker())) {
+                snapshot.activeStartedElapsedMs
+                    ?.let { (clock.elapsedRealtimeMs() - it).coerceAtLeast(0L) }
+                    ?: 0L
+            } else {
+                // After a reboot the monotonic anchor is meaningless. Reconstruct the current run
+                // from the wall-clock anchor and disclose the approximation in the UI.
+                snapshot.activeStartedWallMs
+                    ?.let { (clock.wallClockMs() - it).coerceAtLeast(0L) }
+                    ?: 0L
+            }
         } else {
             0L
         }
@@ -148,6 +160,7 @@ object TimerEngine {
             expectedWallEndMs = null,
             accumulatedActiveMs = snapshot.accumulatedActiveMs + extraActive,
             activeStartedElapsedMs = null,
+            activeStartedWallMs = null,
             version = snapshot.version + 1,
         )
     }
@@ -160,7 +173,9 @@ object TimerEngine {
         return if (snapshot.mode == TimerMode.STOPWATCH) {
             snapshot.copy(
                 status = TimerStatus.RUNNING,
+                bootMarker = clock.bootMarker(),
                 activeStartedElapsedMs = nowElapsed,
+                activeStartedWallMs = nowWall,
                 version = snapshot.version + 1,
             )
         } else {
@@ -170,6 +185,7 @@ object TimerEngine {
                 expectedWallEndMs = nowWall + remaining,
                 bootMarker = clock.bootMarker(),
                 activeStartedElapsedMs = nowElapsed,
+                activeStartedWallMs = nowWall,
                 version = snapshot.version + 1,
             )
         }
@@ -205,6 +221,7 @@ object TimerEngine {
             expectedWallEndMs = null,
             accumulatedActiveMs = snapshot.accumulatedActiveMs + extraActive,
             activeStartedElapsedMs = null,
+            activeStartedWallMs = null,
             version = snapshot.version + 1,
         )
     }
@@ -230,6 +247,7 @@ object TimerEngine {
             expectedWallEndMs = null,
             accumulatedActiveMs = snapshot.accumulatedActiveMs + extraActive,
             activeStartedElapsedMs = null,
+            activeStartedWallMs = null,
             version = snapshot.version + 1,
         )
     }
@@ -324,6 +342,9 @@ object TimeFormat {
             else -> "${minutes}m"
         }
     }
+
+    fun plural(count: Int, singular: String, plural: String = "${singular}s"): String =
+        if (count == 1) singular else plural
 
     fun finishAt(epochMs: Long, zoneId: String): String =
         finishFormatter.format(Instant.ofEpochMilli(epochMs).atZone(ZoneId.of(zoneId)))

@@ -56,6 +56,7 @@ data class TimerSnapshot(
     val bootMarker: String?,
     val accumulatedActiveMs: Long,
     val activeStartedElapsedMs: Long?,
+    val activeStartedWallMs: Long? = null,
     val taskId: String?,
     val taskTitle: String?,
     val startedWallMs: Long,
@@ -101,6 +102,7 @@ data class AppSettings(
     val soundEnabled: Boolean = true,
     val chime: ChimeChoice = ChimeChoice.CHIME,
     val hapticsEnabled: Boolean = true,
+    val fullScreenAlerts: Boolean = false,
     val lastMode: TimerMode = TimerMode.FOCUS,
     val onboardingSeen: Boolean = false,
 )

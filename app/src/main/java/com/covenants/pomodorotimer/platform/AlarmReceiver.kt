@@ -40,8 +40,16 @@ class AlarmReceiver : BroadcastReceiver() {
 
         suspend fun deliverCompletion(context: Context, app: PomodoroApp, result: CompletionResult) {
             val settings = app.container.settings.settings.first()
-            app.container.notifier.postCompletion(result, app.container.repository.routine.value)
-            CompletionAlarmPlayer.play(context, settings)
+            val posted = app.container.notifier.postCompletion(
+                result = result,
+                routine = app.container.repository.routine.value,
+                settings = settings,
+            )
+            CompletionAlarmPlayer.deliver(
+                context = context,
+                settings = settings,
+                playSoundFallback = !posted,
+            )
         }
     }
 }

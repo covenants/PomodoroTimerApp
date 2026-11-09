@@ -67,6 +67,9 @@ fun SettingsScreen(
     onSetSound: (Boolean) -> Unit,
     onSetChime: (ChimeChoice) -> Unit,
     onSetHaptics: (Boolean) -> Unit,
+    onSetFullScreenAlerts: (Boolean) -> Unit,
+    fullScreenAlertsAllowed: Boolean,
+    onRequestFullScreen: () -> Unit,
     onRequestNotifications: () -> Unit,
     onRequestExactAlarm: () -> Unit,
     onExport: () -> Unit,
@@ -159,6 +162,20 @@ fun SettingsScreen(
                 checked = settings.hapticsEnabled,
                 onChange = onSetHaptics,
             )
+            DividerLine()
+            ToggleSettingRow(
+                title = "Full-screen alert",
+                subtitle = if (fullScreenAlertsAllowed) {
+                    "Show the completion alert over the lock screen."
+                } else {
+                    "Android has not granted full-screen alert access."
+                },
+                checked = settings.fullScreenAlerts,
+                onChange = onSetFullScreenAlerts,
+            )
+            if (!fullScreenAlertsAllowed) {
+                TextButton(onClick = onRequestFullScreen) { Text("Allow full-screen alerts") }
+            }
         }
 
         Spacer(Modifier.height(18.dp))

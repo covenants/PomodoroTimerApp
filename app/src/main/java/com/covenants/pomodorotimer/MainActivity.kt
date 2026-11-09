@@ -2,6 +2,7 @@ package com.covenants.pomodorotimer
 
 import android.Manifest
 import android.app.AlarmManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -44,6 +46,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.covenants.pomodorotimer.core.model.FocusTask
 import com.covenants.pomodorotimer.data.TimerEvent
+import com.covenants.pomodorotimer.platform.TimerNotifier
 import com.covenants.pomodorotimer.ui.AppUiState
 import com.covenants.pomodorotimer.ui.MainViewModel
 import com.covenants.pomodorotimer.ui.components.BottomNavBar
@@ -80,6 +83,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        handleAlarmLaunch(intent)
         setContent {
             val state by viewModel.uiState.collectAsStateWithLifecycle()
             val tasks by viewModel.tasks.collectAsStateWithLifecycle()
@@ -90,12 +94,35 @@ class MainActivity : ComponentActivity() {
                     tasks = tasks,
                     hasNotificationPermission = ::hasNotificationPermission,
                     canScheduleExactAlarms = ::canScheduleExactAlarms,
+                    canUseFullScreenIntent = ::canUseFullScreenIntent,
                     onRequestNotifications = ::requestNotificationPermission,
                     onRequestExactAlarm = ::openExactAlarmSettings,
+                    onRequestFullScreen = ::openFullScreenIntentSettings,
                     onExport = ::exportHistory,
                 )
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleAlarmLaunch(intent)
+    }
+
+    private fun handleAlarmLaunch(intent: Intent?) {
+        if (intent?.getBooleanExtra(TimerNotifier.EXTRA_ALARM_LAUNCH, false) != true) return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+        } else {
+            @Suppress("DEPRECATION")
+            window.addFlags(
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+            )
+        }
+        intent.removeExtra(TimerNotifier.EXTRA_ALARM_LAUNCH)
     }
 
     private fun hasNotificationPermission(): Boolean {
@@ -132,6 +159,32 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun canUseFullScreenIntent(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) return true
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        return manager.canUseFullScreenIntent()
+    }
+
+    private fun openFullScreenIntentSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            runCatching {
+                startActivity(
+                    Intent(
+                        Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
+                        Uri.parse("package:$packageName"),
+                    )
+                )
+            }.onFailure {
+                startActivity(Intent(Settings.ACTION_SETTINGS))
+            }
+        } else {
+            startActivity(
+                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            )
+        }
+    }
+
     private fun exportHistory() {
         exportLauncher.launch("orbit-sessions-${LocalDate.now()}.csv")
     }
@@ -144,8 +197,10 @@ fun OrbitApp(
     tasks: List<FocusTask>,
     hasNotificationPermission: () -> Boolean,
     canScheduleExactAlarms: () -> Boolean,
+    canUseFullScreenIntent: () -> Boolean,
     onRequestNotifications: () -> Unit,
     onRequestExactAlarm: () -> Unit,
+    onRequestFullScreen: () -> Unit,
     onExport: () -> Unit,
 ) {
     val navController = rememberNavController()
@@ -163,6 +218,13 @@ fun OrbitApp(
     }
     val notificationsGranted = remember(permissionTick) { hasNotificationPermission() }
     val exactAlarmsAllowed = remember(permissionTick) { canScheduleExactAlarms() }
+    val fullScreenAllowed = remember(permissionTick) { canUseFullScreenIntent() }
+
+    // Returning from Android settings can grant exact-alarm or full-screen access. Re-run the
+    // repository reconciliation so a running timer moves from an inexact to an exact alarm.
+    LaunchedEffect(permissionTick) {
+        if (permissionTick > 0) viewModel.reconcile()
+    }
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val route = backStackEntry?.destination?.route ?: "home"
@@ -329,6 +391,9 @@ fun OrbitApp(
                             onSetSound = viewModel::setSound,
                             onSetChime = viewModel::setChime,
                             onSetHaptics = viewModel::setHaptics,
+                            onSetFullScreenAlerts = viewModel::setFullScreenAlerts,
+                            fullScreenAlertsAllowed = fullScreenAllowed,
+                            onRequestFullScreen = onRequestFullScreen,
                             onRequestNotifications = onRequestNotifications,
                             onRequestExactAlarm = onRequestExactAlarm,
                             onExport = onExport,

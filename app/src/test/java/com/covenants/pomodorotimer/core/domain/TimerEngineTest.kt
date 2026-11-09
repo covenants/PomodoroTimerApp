@@ -141,6 +141,23 @@ class TimerEngineTest {
     }
 
     @Test
+    fun `running stopwatch reconstructs current run from wall clock after reboot`() {
+        val clock = FakeTimeSource()
+        val watch = TimerEngine.newStopwatch("watch", clock)
+        clock.advance(10_000L)
+        clock.reboot()
+        clock.advance(5_000L)
+        assertThat(TimerEngine.stopwatchElapsedMs(watch, clock)).isEqualTo(15_000L)
+    }
+
+    @Test
+    fun `plural helper handles singular and plural`() {
+        assertThat(TimeFormat.plural(1, "session")).isEqualTo("session")
+        assertThat(TimeFormat.plural(0, "session")).isEqualTo("sessions")
+        assertThat(TimeFormat.plural(2, "session")).isEqualTo("sessions")
+    }
+
+    @Test
     fun `extend adds five minutes in running and paused states`() {
         val clock = FakeTimeSource()
         val session = focusSession(clock)

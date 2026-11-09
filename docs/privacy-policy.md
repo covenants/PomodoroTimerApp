@@ -31,7 +31,8 @@ it according to the device's backup settings and the manifests in this repositor
 ## Permissions
 
 - **Notifications** — to show the running timer and completion alert. Optional.
-- **Exact alarms** — to request a timely stage-end alert. Optional; the app degrades honestly.
+- **Exact alarms** — to request a timely stage-end alert. Optional; the app falls back and degrades honestly.
+- **Full-screen alerts** — opt-in, to show the completion alert over the lock screen on Android 14+.
 - **Run at boot** — to reconcile and reschedule a session after a reboot. Optional.
 - **Vibration** — for the optional completion haptic.
 

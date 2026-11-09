@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.covenants.pomodorotimer.core.domain.TimeFormat
 import com.covenants.pomodorotimer.ui.AppUiState
 import com.covenants.pomodorotimer.ui.components.IconCircleButton
 import com.covenants.pomodorotimer.ui.components.OrbitCard
@@ -228,7 +229,7 @@ private fun MoonHero(completedSessions: Int) {
             SectionLabel("Your sky")
             Spacer(Modifier.height(4.dp))
             Text(
-                text = if (completedSessions == 0) "Your first star is waiting." else "$completedSessions sessions of calm.",
+                text = if (completedSessions == 0) "Your first star is waiting." else "$completedSessions ${TimeFormat.plural(completedSessions, "session")} of calm.",
                 style = MaterialTheme.typography.titleLarge,
                 color = colors.text,
             )

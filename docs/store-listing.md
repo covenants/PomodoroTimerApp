@@ -62,19 +62,27 @@ No network permission. No account.
 Orbit Timer is a working title; the final brand will be confirmed before release.
 ```
 
+## Store assets
+
+- App icon: `docs/play/icon-512.png` (512 × 512) and `docs/play/icon-1024.png`
+- Feature graphic: `docs/play/feature-graphic-1024x500.png`
+- Phone screenshots: `docs/play/screenshots/01-home.png` … `08-themes.png` (1080 × 1920)
+
+See `docs/play/README.md` for the full asset pack.
+
 ## Screenshot order
 
-1. Home / Focus — `01-home.png`
-2. Active focus — `02-active-focus.png`
-3. Quick Timer — `03-quick-timer.png`
-4. Tasks — `05-tasks.png`
-5. Insights — `06-insights.png`
-6. Themes / Preferences — `07-settings.png`
-7. Constellations — `08-constellations.png`
-8. Break ready — `02b-break-ready.png`
+1. **Make time count.** — `docs/play/screenshots/01-home.png`
+2. **Stay in your orbit.** — `docs/play/screenshots/02-active-focus.png`
+3. **Any countdown.** — `docs/play/screenshots/03-quick-timer.png`
+4. **Breaks that wait.** — `docs/play/screenshots/04-break-ready.png`
+5. **One thing at a time.** — `docs/play/screenshots/05-tasks.png`
+6. **Progress you can see.** — `docs/play/screenshots/06-insights.png`
+7. **Your orbit, your pace.** — `docs/play/screenshots/07-constellations.png`
+8. **Make it yours.** — `docs/play/screenshots/08-themes.png`
 
 Show only features that actually exist in the shipped build. Replace the Plus screenshot if the
-sample offer is not live.
+sample offer is not live. The current pack does not show Plus or billing.
 
 ## Keywords to research
 
@@ -97,7 +105,10 @@ requires a new declaration.
 ## Permissions declaration notes
 
 - `POST_NOTIFICATIONS` — core active-timer and completion alerts.
-- `SCHEDULE_EXACT_ALARM` — user-facing precise timer. Explain the fallback when access is denied.
+- `SCHEDULE_EXACT_ALARM` — user-granted precise timer on Android 12/12L.
+- `USE_EXACT_ALARM` — auto-granted precise alarms on Android 13+ for a core timer app; declare the
+  timer justification in Play Console.
+- `USE_FULL_SCREEN_INTENT` — optional opt-in completion alert over the lock screen; not used by default.
 - `RECEIVE_BOOT_COMPLETED` — restore/reschedule after reboot.
 - `VIBRATE` — optional haptic feedback.
 - No foreground service, accessibility service, package visibility or broad storage permission.

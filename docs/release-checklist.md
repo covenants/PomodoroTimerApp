@@ -13,23 +13,44 @@ uploading to Google Play.
 
 ## 2. Signing and build
 
-- [ ] Create an upload keystore (never commit it).
-- [ ] Add a `release` signing config fed from environment variables or `~/.gradle/gradle.properties`.
-- [ ] Confirm `applicationId` and version code/name for the release train.
-- [ ] Build `bundleRelease` and verify the `.aab` with `bundletool`.
-- [ ] Keep the mapping file if minification is enabled.
+- [x] Create an upload keystore (never commit it).
+- [x] Add a `release` signing config fed from the local, git-ignored `keystore.properties`.
+- [x] Confirm `applicationId` and version code/name for the release train.
+- [x] Build `bundleRelease` and `assembleRelease`.
+- [ ] Keep the mapping file if minification is enabled (R8 is enabled; `app/build/outputs/mapping/release/`).
+- [ ] Back up the keystore and `keystore.properties` in a secure vault.
 
-Example (do not commit secrets):
+Local release key (do not commit):
+
+```text
+C:\Users\mmkha\.android\keystores\orbit-release.jks
+```
+
+Local password file (do not commit):
+
+```text
+D:\repos\PomodoroTimerApp\keystore.properties
+```
+
+Example signing config (already wired in `app/build.gradle.kts`):
 
 ```kotlin
 signingConfigs {
     create("release") {
-        storeFile = file(System.getenv("ORBIT_KEYSTORE") ?: "missing.jks")
-        storePassword = System.getenv("ORBIT_STORE_PASSWORD")
-        keyAlias = System.getenv("ORBIT_KEY_ALIAS")
-        keyPassword = System.getenv("ORBIT_KEY_PASSWORD")
+        storeFile = file(properties["storeFile"])
+        storePassword = properties["storePassword"]
+        keyAlias = properties["keyAlias"]
+        keyPassword = properties["keyPassword"]
     }
 }
+```
+
+Build:
+
+```bash
+./gradlew --no-daemon bundleRelease assembleRelease
+jarsigner -verify app/build/outputs/bundle/release/app-release.aab
+apksigner verify app/build/outputs/apk/release/app-release.apk
 ```
 
 ## 3. Device and policy tests
@@ -43,6 +64,9 @@ signingConfigs {
 - [ ] Deny exact alarms → inexact fallback → honest UI.
 - [ ] Reboot during a running session → reconcile.
 - [ ] Rotate/recreate Activity repeatedly.
+- [ ] Tap a notification Pause/Resume action after the process has been killed.
+- [ ] Change the wall clock while an alarm is pending → completion remains on time.
+- [ ] Full-screen alert on a locked device with the Android 14+ grant.
 - [ ] TalkBack, 200% font, high contrast, reduced motion.
 - [ ] Doze / app standby.
 - [ ] Delete history and verify it is gone.
@@ -62,9 +86,11 @@ signingConfigs {
 
 ## 5. Release artifacts
 
-- [ ] Signed AAB.
+- [x] Signed AAB: `app/build/outputs/bundle/release/app-release.aab`.
+- [x] Signed APK for smoke testing: `app/build/outputs/apk/release/app-release.apk`.
+- [x] Play icon, feature graphic and eight 1080 × 1920 screenshots in `docs/play/`.
 - [ ] Versioned changelog.
-- [ ] Screenshots captured from the release build.
+- [ ] Screenshots re-captured from the final release build.
 - [ ] Privacy policy URL.
 - [ ] Support email.
 - [ ] Rollback plan and staged rollout percentage.

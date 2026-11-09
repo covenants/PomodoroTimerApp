@@ -251,7 +251,7 @@ fun InsightsScreen(state: AppUiState) {
                 Spacer(Modifier.width(9.dp))
                 Column {
                     Text(
-                        text = "${state.allTimeSessions} completed focus sessions",
+                        text = "${state.allTimeSessions} completed focus ${TimeFormat.plural(state.allTimeSessions, "session")}",
                         style = MaterialTheme.typography.titleMedium,
                         color = colors.text,
                     )

@@ -37,6 +37,7 @@ class SettingsStore(context: Context) {
             soundEnabled = prefs[Keys.SOUND] ?: true,
             chime = prefs[Keys.CHIME].toEnum(ChimeChoice.CHIME),
             hapticsEnabled = prefs[Keys.HAPTICS] ?: true,
+            fullScreenAlerts = prefs[Keys.FULL_SCREEN] ?: false,
             lastMode = prefs[Keys.LAST_MODE].toEnum(TimerMode.FOCUS),
             onboardingSeen = prefs[Keys.ONBOARDING] ?: false,
         )
@@ -62,6 +63,7 @@ class SettingsStore(context: Context) {
     suspend fun setSound(value: Boolean) = put(Keys.SOUND, value)
     suspend fun setChime(value: ChimeChoice) = put(Keys.CHIME, value.name)
     suspend fun setHaptics(value: Boolean) = put(Keys.HAPTICS, value)
+    suspend fun setFullScreenAlerts(value: Boolean) = put(Keys.FULL_SCREEN, value)
     suspend fun setLastMode(value: TimerMode) = put(Keys.LAST_MODE, value.name)
     suspend fun setOnboardingSeen(value: Boolean) = put(Keys.ONBOARDING, value)
 
@@ -90,6 +92,7 @@ class SettingsStore(context: Context) {
         val SOUND = booleanPreferencesKey("sound")
         val CHIME = stringPreferencesKey("chime")
         val HAPTICS = booleanPreferencesKey("haptics")
+        val FULL_SCREEN = booleanPreferencesKey("full_screen_alerts")
         val LAST_MODE = stringPreferencesKey("last_mode")
         val ONBOARDING = booleanPreferencesKey("onboarding_seen")
         val ROUTINE_NAME = stringPreferencesKey("routine_name")

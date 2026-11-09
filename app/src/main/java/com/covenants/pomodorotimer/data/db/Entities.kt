@@ -30,6 +30,7 @@ data class TimerSessionEntity(
     val version: Long,
     val accumulatedActiveMs: Long,
     val activeStartedElapsedMs: Long?,
+    val activeStartedWallMs: Long?,
     val completedWorkCount: Int,
 )
 
@@ -89,6 +90,7 @@ fun TimerSessionEntity.toSnapshot(): TimerSnapshot = TimerSnapshot(
     bootMarker = bootMarker,
     accumulatedActiveMs = accumulatedActiveMs,
     activeStartedElapsedMs = activeStartedElapsedMs,
+    activeStartedWallMs = activeStartedWallMs,
     taskId = taskId,
     taskTitle = taskTitle,
     startedWallMs = startedWallMs,
@@ -114,6 +116,7 @@ fun TimerSnapshot.toEntity(completedWallMs: Long? = null): TimerSessionEntity = 
     version = version,
     accumulatedActiveMs = accumulatedActiveMs,
     activeStartedElapsedMs = activeStartedElapsedMs,
+    activeStartedWallMs = activeStartedWallMs,
     completedWorkCount = completedWorkCount,
 )
 

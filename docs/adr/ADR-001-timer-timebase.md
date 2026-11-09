@@ -22,11 +22,15 @@ Decrementing a `secondsLeft` field once per second is explicitly forbidden.
 4. Pause computes remaining from the monotonic clock, stores it, clears the deadline and cancels the
    alarm. Resume creates a new deadline. Paused wall time is never counted as focus time.
 5. Stopwatch uses an accumulated active duration plus a current monotonic start anchor. It never
-   uses a deadline.
+   uses a deadline. The active run also stores a wall-clock anchor; after a reboot the app reconstructs
+   the current run from `nowWall - activeStartedWallMs` and treats it as approximate.
 6. Completion is idempotent. The event ID `${sessionId}:${stageIndex}:COMPLETED` is a primary key;
    inserting it twice is a no-op and the history write is skipped when the event already exists.
-7. UI ticks are display refreshes only. A separate foreground watchdog checks due-ness once per
-   second while the process is alive; the alarm receiver and app restore call the same command.
+7. UI ticks are display refreshes only. A foreground-only watchdog checks due-ness once per second
+   while the app is visible; the alarm receiver and app restore call the same command. The notification
+   is posted only on state changes; its native chronometer handles the per-second display.
+8. The database is versioned. Version 2 adds `activeStartedWallMs` with an explicit `1 → 2` migration,
+   so a pre-release install survives the upgrade.
 
 ## Consequences
 

@@ -144,29 +144,35 @@ class TimerRepository(
         snapshot
     }
 
-    suspend fun pause(): TimerSnapshot? = mutex.withLock {
-        val current = timerDao.getActive()?.toSnapshot() ?: return@withLock null
-        val paused = TimerEngine.pause(current, clock)
-        if (paused == current) return@withLock current
-        persistLocked(paused)
-        paused
-    }
+    suspend fun pause(): TimerSnapshot? = mutex.withLock { pauseLocked() }
 
-    suspend fun resume(): TimerSnapshot? = mutex.withLock {
-        val current = timerDao.getActive()?.toSnapshot() ?: return@withLock null
-        val resumed = TimerEngine.resume(current, clock)
-        if (resumed == current) return@withLock current
-        persistLocked(resumed)
-        resumed
-    }
+    suspend fun resume(): TimerSnapshot? = mutex.withLock { resumeLocked() }
 
-    suspend fun togglePause(): TimerSnapshot? {
-        val current = active.value ?: return null
-        return when (current.status) {
-            TimerStatus.RUNNING -> pause()
-            TimerStatus.PAUSED -> resume()
+    suspend fun togglePause(): TimerSnapshot? = mutex.withLock {
+        // Read from the database inside the lock. The in-memory StateFlow may not have loaded
+        // yet after Android restarts the process to deliver a notification action.
+        val current = timerDao.getActive()?.toSnapshot() ?: return@withLock null
+        when (current.status) {
+            TimerStatus.RUNNING -> pauseLocked()
+            TimerStatus.PAUSED -> resumeLocked()
             else -> current
         }
+    }
+
+    private suspend fun pauseLocked(): TimerSnapshot? {
+        val current = timerDao.getActive()?.toSnapshot() ?: return null
+        val paused = TimerEngine.pause(current, clock)
+        if (paused == current) return current
+        persistLocked(paused)
+        return paused
+    }
+
+    private suspend fun resumeLocked(): TimerSnapshot? {
+        val current = timerDao.getActive()?.toSnapshot() ?: return null
+        val resumed = TimerEngine.resume(current, clock)
+        if (resumed == current) return current
+        persistLocked(resumed)
+        return resumed
     }
 
     suspend fun addFiveMinutes(): TimerSnapshot? = mutex.withLock {

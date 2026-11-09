@@ -234,7 +234,7 @@ private fun FocusHome(
             modifier = Modifier.weight(1f),
         )
         Text(
-            text = "${TimeFormat.durationLabel(state.todayFocusMs)} · ${state.todaySessions} sessions",
+            text = "${TimeFormat.durationLabel(state.todayFocusMs)} · ${state.todaySessions} ${TimeFormat.plural(state.todaySessions, "session")}",
             style = MaterialTheme.typography.bodySmall,
             color = colors.text,
             fontWeight = FontWeight.Medium,

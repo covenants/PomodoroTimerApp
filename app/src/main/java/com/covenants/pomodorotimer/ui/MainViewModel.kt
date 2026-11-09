@@ -74,6 +74,7 @@ class MainViewModel(
     private val settingsStore: SettingsStore,
     private val clock: TimeSource,
     private val context: Context,
+    private val reconcileAction: suspend () -> Unit,
 ) : ViewModel() {
 
     private val ticker = flow {
@@ -100,11 +101,11 @@ class MainViewModel(
     val messages: SharedFlow<String> = _messages
 
     init {
-        viewModelScope.launch { repository.reconcile() }
+        viewModelScope.launch { reconcileAction() }
     }
 
     fun reconcile() {
-        viewModelScope.launch { repository.reconcile() }
+        viewModelScope.launch { reconcileAction() }
     }
 
     fun selectMode(mode: TimerMode) {
@@ -201,6 +202,10 @@ class MainViewModel(
 
     fun setHaptics(value: Boolean) {
         viewModelScope.launch { settingsStore.setHaptics(value) }
+    }
+
+    fun setFullScreenAlerts(value: Boolean) {
+        viewModelScope.launch { settingsStore.setFullScreenAlerts(value) }
     }
 
     fun addTask(title: String, tag: String?, estimateSessions: Int) {
@@ -350,6 +355,7 @@ class MainViewModel(
                 settingsStore = container.settings,
                 clock = container.clock,
                 context = context.applicationContext,
+                reconcileAction = container::reconcileAndDeliver,
             ) as T
         }
     }

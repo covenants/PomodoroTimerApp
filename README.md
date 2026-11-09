@@ -3,7 +3,9 @@
 A native Android focus timer built from the supplied product package in `docs/reference/`.
 Kotlin + Jetpack Compose + Material 3 + Room + DataStore, offline-first, no account required.
 
-**Status:** debug build verified on an Android 16 / API 36 emulator. 13 timer-engine unit tests pass. Lint passes with no errors.
+**Status:** signed release candidate built. 15 timer-engine unit tests pass; lint passes with no errors;
+the release APK was installed and exercised on an Android 16 / API 36 emulator. The AAB and APK are in
+`dist/` and on the GitHub release.
 
 <p align="center">
   <img src="docs/screenshots/01-home.png" width="23%" alt="Home / Focus" />
@@ -68,6 +70,35 @@ Kotlin + Jetpack Compose + Material 3 + Room + DataStore, offline-first, no acco
 
 All screenshots were captured from the running debug APK, not from the HTML reference package.
 
+## Play Store assets
+
+<p align="center">
+  <img src="docs/play/icon-512.png" width="120" alt="Orbit Timer icon" />
+  <img src="docs/play/feature-graphic-1024x500.png" width="420" alt="Orbit Timer feature graphic" />
+</p>
+
+The release asset pack lives in `docs/play/`:
+
+- `icon-512.png` — Play Store icon
+- `icon-1024.png` — source icon
+- `feature-graphic-1024x500.png` — Play feature graphic
+- `screenshots/01-home.png` … `08-themes.png` — eight 1080×1920 framed store screenshots
+
+See `docs/play/README.md` for the caption order and requirements. Regenerate with
+`python tools/generate_assets.py`.
+
+## Release artifacts
+
+The signed release build is produced locally (the keystore is never committed):
+
+- `app/build/outputs/bundle/release/app-release.aab`
+- `app/build/outputs/apk/release/app-release.apk`
+- copies are placed in `dist/` for convenience
+
+The `dist/` folder and `keystore.properties` are git-ignored. Back up the keystore at
+`C:\Users\mmkha\.android\keystores\orbit-release.jks` and the local `keystore.properties` before
+publishing or handing the project to anyone else.
+
 ## Architecture
 
 ```
@@ -130,10 +161,16 @@ Release signing is not configured. See `docs/release-checklist.md` before produc
 
 | Permission | Why | If denied |
 | --- | --- | --- |
-| `POST_NOTIFICATIONS` | Active timer status and completion alerts | Timer still runs; UI explains alerts are off; sound/haptics still attempt to play |
-| `SCHEDULE_EXACT_ALARM` | Timely stage-end alert | Falls back to inexact allow-while-idle alarm; UI warns that alerts may be delayed |
+| `POST_NOTIFICATIONS` | Active timer status and completion alerts | Timer still runs; UI explains alerts are off; fallback sound/haptics still attempt to play |
+| `SCHEDULE_EXACT_ALARM` | User-granted precise alert on Android 12–12L | Falls back to inexact allow-while-idle alarm; UI warns that alerts may be delayed |
+| `USE_EXACT_ALARM` | Auto-granted precise alerts on Android 13+ for a core timer app | Android still enforces its policy; the app checks `canScheduleExactAlarms()` and degrades honestly |
+| `USE_FULL_SCREEN_INTENT` | Optional full-screen completion alert over the lock screen | Notification stays high-priority but does not take over the screen; setting is opt-in |
 | `RECEIVE_BOOT_COMPLETED` | Reconcile and reschedule after reboot | Timer still restores from persisted state when the app is opened |
 | `VIBRATE` | Optional completion haptic | No vibration; all other behavior unchanged |
+
+The completion alert uses a high-importance channel with the alarm audio stream. The app only plays a
+direct fallback sound when notifications are denied, so the same alert is not played twice. Full-screen
+alerts are off by default and require the Android 14+ user grant; the Settings screen links to it.
 
 No `AccessibilityService`, `QUERY_ALL_PACKAGES`, `UsageStats`, location, contacts, broad storage or foreground-service permissions are used. CSV export uses the Android Storage Access Framework.
 
@@ -141,17 +178,23 @@ No `AccessibilityService`, `QUERY_ALL_PACKAGES`, `UsageStats`, location, contact
 
 | Check | Result |
 | --- | --- |
-| `testDebugUnitTest` | **PASS**, 13 tests |
+| `testDebugUnitTest` | **PASS**, 15 tests |
 | `lintDebug` | **PASS**, 0 errors |
 | `assembleDebug` | **PASS** |
-| Install on API 36 emulator | **PASS** |
-| 5-second countdown completion | **PASS** — one history row, one completion notification |
+| `bundleRelease` / `assembleRelease` | **PASS**, R8 minified + resource shrinking |
+| Signed AAB / APK | **PASS** — `jarsigner` verified the AAB; `apksigner` verified the APK (v2 scheme) |
+| Room migration 1 → 2 | **PASS** — upgrading the installed debug build preserved sessions and added `activeStartedWallMs` |
+| Install release APK on API 36 emulator | **PASS** — no R8-related crash |
+| 5-second countdown completion | **PASS** — one history row, one completion notification on the alarm-stream channel |
 | 1-minute focus completion | **PASS** — “Break ready”, one completed work stage |
 | Background screen-off timing | **PASS** — accurate remaining after 12 seconds off-screen; native chronometer notification |
 | Pause while backgrounded | **PASS** — notification shows “Paused · 00:29 remaining” |
 | Process death + relaunch | **PASS** — force-stopped mid-countdown; relaunch restored and auto-opened the live screen with the correct remaining time |
 | Foreground watchdog completion | **PASS** — 30-second countdown reached 00:00 and completed while visible, without waiting for an alarm |
-| Populated insights | **PASS** — 1m, 1 session, 1-day streak |
+| Exact-alarm access | **PASS** — `USE_EXACT_ALARM` grants precise alarms on the test device; Settings shows “Allowed” |
+| Notification channel sound | **PASS** — channels report `USAGE_ALARM`; bell uses `alarm_alert` |
+| Populated insights | **PASS** — 1m, 1 session, 1-day streak, singular copy |
+| Play assets | **PASS** — icon 512/1024, feature graphic, 8 × 1080×1920 screenshots |
 | Physical-device OEM matrix | **NOT RUN** — needs Pixel/Samsung/Xiaomi-class hardware |
 | Notification-denied path | **NOT RUN** as a device test |
 | TalkBack / 200% font | **NOT RUN** as a device test |
@@ -160,12 +203,16 @@ See `docs/test-matrix.md` for the full T-001–T-016 matrix and honest status.
 
 ## Known limitations
 
-- Exact completion alerts are ultimately controlled by Android/OEM battery policy. The app never claims a notification is guaranteed when permission is denied.
+- Exact completion alerts are ultimately controlled by Android/OEM battery policy. `USE_EXACT_ALARM` plus `SCHEDULE_EXACT_ALARM` improve this for a core timer app, but the app never claims a notification is guaranteed.
+- Full-screen alerts are opt-in and require the Android 14+ full-screen-intent grant; without it the high-priority notification is still delivered.
 - Force-stopping the app from Android settings blocks alarms until the app is opened again; the session is reconstructed on next launch.
+- Stopwatch recovery after a reboot uses the persisted wall-clock anchor and is therefore approximate; the countdown path uses the same conservative fallback.
 - No Google Play Billing implementation. The Plus screen is a truthful placeholder.
 - No ambient audio packs, home-screen widget, cloud sync, app blocking, lap list, or onboarding flow yet.
 - Single-module build for clarity; package boundaries are prepared for later feature modules.
 - Only the default `en` strings are present; UI copy is ready for localization but not translated.
+- The release keystore is local and not in git. Back up `C:\Users\mmkha\.android\keystores\orbit-release.jks` and `keystore.properties` before publishing.
+- Physical-device tests on Pixel, Samsung and Xiaomi-class hardware are still required before a public release.
 
 ## Documentation
 
