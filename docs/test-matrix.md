@@ -28,11 +28,14 @@ Abbreviations: **PASS** = executed and observed; **UNIT** = proven by a JVM unit
 | T-017 | Exact-alarm access on fresh install | **PASS** | `USE_EXACT_ALARM` + `SCHEDULE_EXACT_ALARM`; Settings showed “Allowed” on API 36 |
 | T-018 | Notification action after process death | **PASS** | Started a 2-minute countdown, pressed Home, ran `am kill`, expanded the shade and tapped Pause. The restarted process read the session from Room and paused at `00:37 remaining` |
 | T-019 | Wall-clock change while alarm pending | **NOT RUN** | Alarm now uses `ELAPSED_REALTIME_WAKEUP`; no rooted wall-clock mutation test executed |
-| T-020 | Completion channel sound | **PASS** | `session_alerts_bell` reports `mSound=content://settings/system/alarm_alert` and `usage=USAGE_ALARM`; gentle/chime use the same alarm stream |
+| T-020 | Completion channel sound | **PASS** | `session_alerts_v2_bell/gentle/chime` use bundled raw WAV resources with `usage=USAGE_ALARM`; all three are distinct |
 | T-021 | Full-screen alert over lock screen | **NOT RUN** | Opt-in setting and `USE_FULL_SCREEN_INTENT` wired; requires a locked, granted Android 14+ device |
 | T-022 | Signed release build | **PASS** | `bundleRelease` + `assembleRelease`; `jarsigner -verify` says “jar verified”; `apksigner` verifies APK Signature Scheme v2 |
 | T-023 | Singular/plural copy | **PASS** | Home shows `1m · 1 session`; Insights shows `1 completed focus session` |
 | T-024 | R8/minified release smoke test | **PASS** | Installed 1.69 MB release APK; launched, completed a countdown, posted the notification, no R8 crash |
+| T-025 | `SCHEDULE_EXACT_ALARM` maxSdk | **PASS** | Manifest declares `android:maxSdkVersion="32"` alongside `USE_EXACT_ALARM` |
+| T-026 | Gentle / Chime / Bell distinct | **PASS** | Three bundled WAV resources; channel IDs bumped to `*_v2_*` so upgrades receive the new sounds |
+| T-027 | Play Console declaration docs | **PASS** | Release checklist and store listing mark exact-alarm and full-screen-intent declarations as mandatory |
 
 ## Executed commands and results
 

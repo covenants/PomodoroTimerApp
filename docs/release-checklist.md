@@ -18,7 +18,8 @@ uploading to Google Play.
 - [x] Confirm `applicationId` and version code/name for the release train.
 - [x] Build `bundleRelease` and `assembleRelease`.
 - [ ] Keep the mapping file if minification is enabled (R8 is enabled; `app/build/outputs/mapping/release/`).
-- [ ] Back up the keystore and `keystore.properties` in a secure vault.
+- [x] Back up the keystore and `keystore.properties` in a secure vault.
+  Local backup created at `C:\Users\mmkha\OrbitTimer-signing-backup.zip`; move it off this machine.
 
 Local release key (do not commit):
 
@@ -76,7 +77,11 @@ apksigner verify app/build/outputs/apk/release/app-release.apk
 
 - [ ] App content questionnaire (ads: no; news: no; health: no).
 - [ ] Data Safety form matches `docs/privacy-policy.md`.
-- [ ] Permissions declaration for exact alarms, if submitted.
+- [ ] **Exact-alarm declaration is mandatory** because `USE_EXACT_ALARM` is declared. Explain that
+      precise stage-end alerts are the core function of the app and that the app falls back when access
+      is unavailable.
+- [ ] **Full-screen-intent declaration is mandatory** because `USE_FULL_SCREEN_INTENT` is declared.
+      Explain that it is an opt-in, user-visible completion alert for a timer; it is off by default.
 - [ ] Target API level meets the current Play requirement.
 - [ ] Content rating questionnaire.
 - [ ] Store listing text, screenshots, feature graphic and icon.

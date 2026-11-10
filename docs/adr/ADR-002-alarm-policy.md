@@ -19,7 +19,8 @@ service.
    persisted wall fallback and reschedules.
 3. Declare both `USE_EXACT_ALARM` and `SCHEDULE_EXACT_ALARM`:
    - `USE_EXACT_ALARM` is auto-granted on Android 13+ for apps whose core function is a timer/alarm.
-   - `SCHEDULE_EXACT_ALARM` remains the user-granted path on Android 12/12L.
+   - `SCHEDULE_EXACT_ALARM` remains the user-granted path on Android 12/12L and is capped with
+     `android:maxSdkVersion="32"`, matching Google's recommended combination.
    - Always check `canScheduleExactAlarms()` and fall back to `setAndAllowWhileIdle` if precise access
      is unavailable.
 4. When the user returns from Android settings after granting exact-alarm access, the app re-runs
@@ -28,12 +29,13 @@ service.
    without a service, plus a foreground-only watchdog while the app is visible.
 6. Notification channels:
    - `active_timer` — low importance, silent, no badge.
-   - `session_alerts_silent`, `session_alerts_gentle`, `session_alerts_chime`,
-     `session_alerts_bell` — high importance. The three audible channels use
-     `AudioAttributes.USAGE_ALARM`; the bell channel uses the system alarm sound. Sound is part of the
-     channel, not a short-lived receiver, so it survives app freezing/killing.
-   - If notifications are denied, the app plays a direct fallback sound and still runs the optional
-     haptic. It does not play both channel and fallback sound when the notification is posted.
+   - `session_alerts_v2_silent`, `session_alerts_v2_gentle`, `session_alerts_v2_chime`,
+     `session_alerts_v2_bell` — high importance. The three audible channels use bundled WAV resources
+     (`gentle_chime.wav`, `chime.wav`, `bell.wav`) on `AudioAttributes.USAGE_ALARM`, so Gentle, Chime
+     and Bell are genuinely different. The `v2` IDs force Android to pick up the new sounds after an
+     upgrade, since channel settings are immutable once created.
+   - If notifications are denied, the app plays the same bundled resource directly and still runs the
+     optional haptic. It does not play both channel and fallback sound when the notification is posted.
 7. Full-screen alert is an **opt-in** setting. When enabled and `NotificationManager.canUseFullScreenIntent()`
    allows it, the completion notification uses a full-screen intent that launches `MainActivity` with
    `setShowWhenLocked`/`setTurnScreenOn`. On Android 14+ the user can grant or revoke this access; the

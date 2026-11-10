@@ -3,10 +3,12 @@ package com.covenants.pomodorotimer.platform
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import com.covenants.pomodorotimer.R
 import com.covenants.pomodorotimer.core.model.AppSettings
 import com.covenants.pomodorotimer.core.model.ChimeChoice
 
@@ -27,13 +29,13 @@ object CompletionAlarmPlayer {
     }
 
     private fun playSound(context: Context, settings: AppSettings) {
-        val type = when (settings.chime) {
-            ChimeChoice.GENTLE -> RingtoneManager.TYPE_NOTIFICATION
-            ChimeChoice.CHIME -> RingtoneManager.TYPE_NOTIFICATION
-            ChimeChoice.BELL -> RingtoneManager.TYPE_ALARM
+        val resourceId = when (settings.chime) {
+            ChimeChoice.GENTLE -> R.raw.gentle_chime
+            ChimeChoice.CHIME -> R.raw.chime
+            ChimeChoice.BELL -> R.raw.bell
         }
         runCatching {
-            val uri = RingtoneManager.getDefaultUri(type)
+            val uri = Uri.parse("android.resource://${context.packageName}/$resourceId")
             val ringtone = RingtoneManager.getRingtone(context.applicationContext, uri)
             ringtone.audioAttributes = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_ALARM)

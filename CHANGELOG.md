@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.1 — release candidate (2026-11-09)
+
+- Added `android:maxSdkVersion="32"` to `SCHEDULE_EXACT_ALARM`, matching Google's recommended setup
+  when `USE_EXACT_ALARM` is also declared.
+- Bundled three distinct completion sounds (`gentle_chime.wav`, `chime.wav`, `bell.wav`) so the
+  Gentle/Chime/Bell setting now has a real audible effect. New channel IDs force Android to pick up the
+  new sounds on upgrade.
+- Documented that the exact-alarm and full-screen-intent Play Console declarations are mandatory.
+- Created a local backup of the upload key and password file outside the repository. Move
+  `C:\Users\mmkha\OrbitTimer-signing-backup.zip` to a secure vault or password manager.
+
 ## 1.0.0 — release candidate (2026-11-09)
 
 ### Timing and alarms

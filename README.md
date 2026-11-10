@@ -3,7 +3,7 @@
 A native Android focus timer built from the supplied product package in `docs/reference/`.
 Kotlin + Jetpack Compose + Material 3 + Room + DataStore, offline-first, no account required.
 
-**Status:** signed release candidate built. 15 timer-engine unit tests pass; lint passes with no errors;
+**Status:** signed 1.0.1 release candidate built. 15 timer-engine unit tests pass; lint passes with no errors;
 the release APK was installed and exercised on an Android 16 / API 36 emulator. The AAB and APK are in
 `dist/` and on the GitHub release.
 
@@ -93,11 +93,13 @@ The signed release build is produced locally (the keystore is never committed):
 
 - `app/build/outputs/bundle/release/app-release.aab`
 - `app/build/outputs/apk/release/app-release.apk`
-- copies are placed in `dist/` for convenience
+- copies are placed in `dist/` as `orbit-timer-1.0.1.aab` and `orbit-timer-1.0.1.apk`
 
-The `dist/` folder and `keystore.properties` are git-ignored. Back up the keystore at
-`C:\Users\mmkha\.android\keystores\orbit-release.jks` and the local `keystore.properties` before
-publishing or handing the project to anyone else.
+The `keystore.properties` file is git-ignored. The signed `dist/` artifacts are committed so they can be
+downloaded directly from the repository. A local backup of the keystore and password file was created at
+`C:\Users\mmkha\OrbitTimer-signing-backup.zip`; move it to a secure vault or password manager. Back up
+the original key at `C:\Users\mmkha\.android\keystores\orbit-release.jks` before publishing or handing
+the project to anyone else.
 
 ## Architecture
 
@@ -162,7 +164,7 @@ Release signing is not configured. See `docs/release-checklist.md` before produc
 | Permission | Why | If denied |
 | --- | --- | --- |
 | `POST_NOTIFICATIONS` | Active timer status and completion alerts | Timer still runs; UI explains alerts are off; fallback sound/haptics still attempt to play |
-| `SCHEDULE_EXACT_ALARM` | User-granted precise alert on Android 12–12L | Falls back to inexact allow-while-idle alarm; UI warns that alerts may be delayed |
+| `SCHEDULE_EXACT_ALARM` | User-granted precise alert on Android 12–12L (`maxSdkVersion=32`) | Falls back to inexact allow-while-idle alarm; UI warns that alerts may be delayed |
 | `USE_EXACT_ALARM` | Auto-granted precise alerts on Android 13+ for a core timer app | Android still enforces its policy; the app checks `canScheduleExactAlarms()` and degrades honestly |
 | `USE_FULL_SCREEN_INTENT` | Optional full-screen completion alert over the lock screen | Notification stays high-priority but does not take over the screen; setting is opt-in |
 | `RECEIVE_BOOT_COMPLETED` | Reconcile and reschedule after reboot | Timer still restores from persisted state when the app is opened |
@@ -211,7 +213,8 @@ See `docs/test-matrix.md` for the full T-001–T-016 matrix and honest status.
 - No ambient audio packs, home-screen widget, cloud sync, app blocking, lap list, or onboarding flow yet.
 - Single-module build for clarity; package boundaries are prepared for later feature modules.
 - Only the default `en` strings are present; UI copy is ready for localization but not translated.
-- The release keystore is local and not in git. Back up `C:\Users\mmkha\.android\keystores\orbit-release.jks` and `keystore.properties` before publishing.
+- The release keystore is local and not in git. Back up `C:\Users\mmkha\.android\keystores\orbit-release.jks`, `keystore.properties`, and `C:\Users\mmkha\OrbitTimer-signing-backup.zip` before publishing.
+- Play Console requires declarations for both `USE_EXACT_ALARM` and `USE_FULL_SCREEN_INTENT`, even though the full-screen alert is optional and off by default.
 - Physical-device tests on Pixel, Samsung and Xiaomi-class hardware are still required before a public release.
 
 ## Documentation

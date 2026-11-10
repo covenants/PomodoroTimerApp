@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.AudioAttributes
-import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -253,7 +253,7 @@ class TimerNotifier(private val context: Context) {
             NotificationManager.IMPORTANCE_HIGH,
         ).apply {
             description = "Soft completion alert"
-            setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), audioAttributes)
+            setSound(resourceUri(R.raw.gentle_chime), audioAttributes)
             enableVibration(false)
         }
 
@@ -263,7 +263,7 @@ class TimerNotifier(private val context: Context) {
             NotificationManager.IMPORTANCE_HIGH,
         ).apply {
             description = "Completion chime"
-            setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), audioAttributes)
+            setSound(resourceUri(R.raw.chime), audioAttributes)
             enableVibration(false)
         }
 
@@ -273,14 +273,23 @@ class TimerNotifier(private val context: Context) {
             NotificationManager.IMPORTANCE_HIGH,
         ).apply {
             description = "Completion bell played on the alarm stream"
-            setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM), audioAttributes)
+            setSound(resourceUri(R.raw.bell), audioAttributes)
             enableVibration(false)
         }
 
         nm.createNotificationChannels(listOf(active, silent, gentle, chime, bell))
-        // Remove the old silent channel from pre-release builds.
-        runCatching { nm.deleteNotificationChannel("session_alerts") }
+        // Remove channels from pre-release builds so the new bundled sounds take effect.
+        listOf(
+            "session_alerts",
+            "session_alerts_silent",
+            "session_alerts_gentle",
+            "session_alerts_chime",
+            "session_alerts_bell",
+        ).forEach { old -> runCatching { nm.deleteNotificationChannel(old) } }
     }
+
+    private fun resourceUri(resourceId: Int): Uri =
+        Uri.parse("android.resource://${context.packageName}/$resourceId")
 
     private fun soundChannel(chime: ChimeChoice): String = when (chime) {
         ChimeChoice.GENTLE -> CHANNEL_GENTLE
@@ -290,10 +299,10 @@ class TimerNotifier(private val context: Context) {
 
     companion object {
         const val CHANNEL_ACTIVE = "active_timer"
-        const val CHANNEL_SILENT = "session_alerts_silent"
-        const val CHANNEL_GENTLE = "session_alerts_gentle"
-        const val CHANNEL_CHIME = "session_alerts_chime"
-        const val CHANNEL_BELL = "session_alerts_bell"
+        const val CHANNEL_SILENT = "session_alerts_v2_silent"
+        const val CHANNEL_GENTLE = "session_alerts_v2_gentle"
+        const val CHANNEL_CHIME = "session_alerts_v2_chime"
+        const val CHANNEL_BELL = "session_alerts_v2_bell"
         const val ACTIVE_ID = 4201
         const val COMPLETION_ID = 4202
         const val EXTRA_ALARM_LAUNCH = "alarm_launch"

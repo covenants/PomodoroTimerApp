@@ -105,10 +105,11 @@ requires a new declaration.
 ## Permissions declaration notes
 
 - `POST_NOTIFICATIONS` — core active-timer and completion alerts.
-- `SCHEDULE_EXACT_ALARM` — user-granted precise timer on Android 12/12L.
-- `USE_EXACT_ALARM` — auto-granted precise alarms on Android 13+ for a core timer app; declare the
-  timer justification in Play Console.
+- `SCHEDULE_EXACT_ALARM` — user-granted precise timer on Android 12/12L; `maxSdkVersion=32`.
+- `USE_EXACT_ALARM` — auto-granted precise alarms on Android 13+ for a core timer app. The exact-alarm
+  declaration is **mandatory** in Play Console.
 - `USE_FULL_SCREEN_INTENT` — optional opt-in completion alert over the lock screen; not used by default.
+  The full-screen-intent declaration is **mandatory** in Play Console.
 - `RECEIVE_BOOT_COMPLETED` — restore/reschedule after reboot.
 - `VIBRATE` — optional haptic feedback.
 - No foreground service, accessibility service, package visibility or broad storage permission.
