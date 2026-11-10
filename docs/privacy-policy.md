@@ -1,12 +1,12 @@
 # Privacy policy (draft)
 
-**App:** Orbit Timer (working title) — package `com.covenants.pomodorotimer`
+**App:** Lodestar — package `com.covenants.pomodorotimer`
 **Effective date:** 9 November 2026
 **Status:** Draft for Play Console review. Replace the contact placeholder before publishing.
 
 ## Summary
 
-Orbit Timer is an offline-first timer. It does not require an account, does not contain advertising
+Lodestar is an offline-first timer. It does not require an account, does not contain advertising
 or analytics SDKs, and does not send your focus history, task titles or preferences to a server.
 
 ## Data the app stores on your device
@@ -60,3 +60,6 @@ Data Safety declaration must be updated before that version ships.
 
 Replace this line with a monitored support email before publishing:
 `support@example.com`
+
+Suggested public policy URL (verify and register the domain first):
+`https://lodestarfocus.app/privacy`

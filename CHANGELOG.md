@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.2 — release candidate (2026-11-09)
+
+- Renamed the app to **Lodestar**. The package ID remains `com.covenants.pomodorotimer`.
+- Store title is `Lodestar: Pomodoro & Focus` (26 characters, within Play's 30-character limit).
+- Renamed the in-app "Orbit Plus" label to "Lodestar Plus"; version display now comes from BuildConfig.
+- Regenerated the feature graphic and eight store screenshots with the Lodestar wordmark.
+- Updated privacy policy, store listing, release checklist and ADRs for the new brand.
+- Export filenames now use `lodestar-sessions-*.csv`.
+- Noted the checkout items: USPTO serial #90477866 and a suggested `lodestarfocus.app` domain.
+
 ## 1.0.1 — release candidate (2026-11-09)
 
 - Added `android:maxSdkVersion="32"` to `SCHEDULE_EXACT_ALARM`, matching Google's recommended setup

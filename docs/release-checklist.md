@@ -5,8 +5,11 @@ uploading to Google Play.
 
 ## 1. Brand and legal
 
-- [ ] Clear the final app name (trademark, Play search, domain, handle).
-- [ ] Replace `app_name` and store title.
+- [x] Select a brand after an informal App Store/Play/USPTO search: **Lodestar**.
+- [ ] Check USPTO serial #90477866 (LODESTAR, Class 9, Edenic Era LLC) and get a short attorney review.
+- [x] Replace `app_name` and store title with Lodestar.
+- [ ] Register a domain for the privacy policy. `lodestarfocus.app` and `lodestarfocus.com` appeared
+      unregistered in an RDAP lookup on 2026-11-09; verify at a registrar before relying on either.
 - [ ] Replace the privacy-policy contact placeholder and host a public URL.
 - [ ] Review the supplied reference package for any third-party marks; do not copy competitor art.
 - [ ] Add an app attribution / open-source notices screen if required by dependencies.
@@ -19,7 +22,7 @@ uploading to Google Play.
 - [x] Build `bundleRelease` and `assembleRelease`.
 - [ ] Keep the mapping file if minification is enabled (R8 is enabled; `app/build/outputs/mapping/release/`).
 - [x] Back up the keystore and `keystore.properties` in a secure vault.
-  Local backup created at `C:\Users\mmkha\OrbitTimer-signing-backup.zip`; move it off this machine.
+  Local backup created at `C:\Users\mmkha\Lodestar-signing-backup.zip`; move it off this machine.
 
 Local release key (do not commit):
 

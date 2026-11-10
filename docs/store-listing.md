@@ -1,11 +1,13 @@
 # Google Play listing copy (draft)
 
-> “Orbit” is a working title. Run a Play Store search, trademark check and domain/handle review
-> before publishing. Do not use the name as cleared brand without that review.
+> **Lodestar** was selected after an informal App Store/Play/USPTO search. This is not formal legal
+> clearance. Check USPTO serial #90477866 and get a short attorney review before investing in the brand.
 
 ## App title
 
-`Orbit Timer: Pomodoro & Focus` (29 characters)
+`Lodestar: Pomodoro & Focus` (26 characters — within Play’s 30-character limit)
+
+*The longer “Lodestar: Pomodoro & Focus Timer” is 32 characters and would be rejected.*
 
 ## Short description (≤ 80 characters)
 
@@ -16,7 +18,7 @@
 ```
 One tap to start. Your time stays yours.
 
-Orbit Timer is a calm, offline-first focus timer with two first-class modes:
+Lodestar is a calm, offline-first focus timer with two first-class modes:
 
 FOCUS / POMODORO
 • 25 / 5 by default, with 50 / 10 and 5-minute presets
@@ -52,14 +54,14 @@ MAKE IT YOURS
 
 CORE TIMERS ARE FREE
 Focus, countdown, stopwatch, alerts, local history and accessibility settings are free.
-Orbit Plus is an optional future upgrade for extended reports, sound packs and extra themes.
+Lodestar Plus is an optional future upgrade for extended reports, sound packs and extra themes.
 The price shown in this build is a labelled sample, not a live offer.
 
 PRIVATE BY DEFAULT
 Your tasks, sessions and preferences stay on your device. No analytics SDK. No advertising ID.
 No network permission. No account.
 
-Orbit Timer is a working title; the final brand will be confirmed before release.
+Lodestar is a working name selected after an informal search; confirm the final brand before launch.
 ```
 
 ## Store assets

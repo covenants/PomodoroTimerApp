@@ -60,7 +60,7 @@ eight source screens listed in the README. The store screenshots are generated a
 
 ## Before upload
 
-- Replace the working title “Orbit” only after trademark and Play search clearance.
+- **Lodestar** was selected after an informal search; formal trademark clearance is still recommended.
 - Confirm the screenshots still match the release build.
 - Keep the feature graphic and icon free of unlicensed third-party art.
 - The Plus sample price is not shown in this asset pack.

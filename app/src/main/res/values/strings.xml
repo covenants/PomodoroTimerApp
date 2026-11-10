@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Orbit Timer</string>
+    <string name="app_name">Lodestar</string>
     <string name="channel_active_name">Active timer</string>
     <string name="channel_active_description">Quiet status notification while a timer is running</string>
     <string name="channel_completion_name">Session alerts</string>

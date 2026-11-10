@@ -1,9 +1,9 @@
-# Orbit Timer — Pomodoro & Everyday Timer
+# Lodestar - Pomodoro & Everyday Timer
 
 A native Android focus timer built from the supplied product package in `docs/reference/`.
 Kotlin + Jetpack Compose + Material 3 + Room + DataStore, offline-first, no account required.
 
-**Status:** signed 1.0.1 release candidate built. 15 timer-engine unit tests pass; lint passes with no errors;
+**Status:** signed 1.0.2 release candidate built. 15 timer-engine unit tests pass; lint passes with no errors;
 the release APK was installed and exercised on an Android 16 / API 36 emulator. The AAB and APK are in
 `dist/` and on the GitHub release.
 
@@ -66,15 +66,15 @@ the release APK was installed and exercised on an Android 16 / API 36 emulator. 
 | Preferences | `docs/screenshots/07-settings.png` |
 | Constellations | `docs/screenshots/08-constellations.png` |
 | Routine | `docs/screenshots/09-routine.png` |
-| Orbit Plus | `docs/screenshots/10-plus.png` |
+| Lodestar Plus | `docs/screenshots/10-plus.png` |
 
 All screenshots were captured from the running debug APK, not from the HTML reference package.
 
 ## Play Store assets
 
 <p align="center">
-  <img src="docs/play/icon-512.png" width="120" alt="Orbit Timer icon" />
-  <img src="docs/play/feature-graphic-1024x500.png" width="420" alt="Orbit Timer feature graphic" />
+  <img src="docs/play/icon-512.png" width="120" alt="Lodestar icon" />
+  <img src="docs/play/feature-graphic-1024x500.png" width="420" alt="Lodestar feature graphic" />
 </p>
 
 The release asset pack lives in `docs/play/`:
@@ -93,11 +93,11 @@ The signed release build is produced locally (the keystore is never committed):
 
 - `app/build/outputs/bundle/release/app-release.aab`
 - `app/build/outputs/apk/release/app-release.apk`
-- copies are placed in `dist/` as `orbit-timer-1.0.1.aab` and `orbit-timer-1.0.1.apk`
+- copies are placed in `dist/` as `lodestar-1.0.2.aab` and `lodestar-1.0.2.apk`
 
 The `keystore.properties` file is git-ignored. The signed `dist/` artifacts are committed so they can be
 downloaded directly from the repository. A local backup of the keystore and password file was created at
-`C:\Users\mmkha\OrbitTimer-signing-backup.zip`; move it to a secure vault or password manager. Back up
+`C:\Users\mmkha\Lodestar-signing-backup.zip`; move it to a secure vault or password manager. Back up
 the original key at `C:\Users\mmkha\.android\keystores\orbit-release.jks` before publishing or handing
 the project to anyone else.
 
@@ -213,8 +213,9 @@ See `docs/test-matrix.md` for the full T-001–T-016 matrix and honest status.
 - No ambient audio packs, home-screen widget, cloud sync, app blocking, lap list, or onboarding flow yet.
 - Single-module build for clarity; package boundaries are prepared for later feature modules.
 - Only the default `en` strings are present; UI copy is ready for localization but not translated.
-- The release keystore is local and not in git. Back up `C:\Users\mmkha\.android\keystores\orbit-release.jks`, `keystore.properties`, and `C:\Users\mmkha\OrbitTimer-signing-backup.zip` before publishing.
+- The release keystore is local and not in git. Back up `C:\Users\mmkha\.android\keystores\orbit-release.jks`, `keystore.properties`, and `C:\Users\mmkha\Lodestar-signing-backup.zip` before publishing.
 - Play Console requires declarations for both `USE_EXACT_ALARM` and `USE_FULL_SCREEN_INTENT`, even though the full-screen alert is optional and off by default.
+- **Lodestar** was selected after an informal search. Check USPTO serial #90477866 and get a short attorney review before investing in the brand.
 - Physical-device tests on Pixel, Samsung and Xiaomi-class hardware are still required before a public release.
 
 ## Documentation
@@ -230,4 +231,4 @@ See `docs/test-matrix.md` for the full T-001–T-016 matrix and honest status.
 
 ## Attribution
 
-The implementation is original. The supplied HTML package is an internal planning artifact dated 9 November 2026. Competitor names and any third-party marks belong to their respective owners. “Orbit” is a working title and has not been trademark-cleared. Review the name before publishing.
+The implementation is original. The supplied HTML package is an internal planning artifact dated 9 November 2026. Competitor names and any third-party marks belong to their respective owners. **Lodestar** was selected after an informal App Store/Play/USPTO search; this is not formal legal clearance. Check USPTO serial #90477866 and get a short attorney review before investing in the brand.

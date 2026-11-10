@@ -1,5 +1,5 @@
 """
-Generate the Orbit Timer launcher icon, Play icon, feature graphic and store screenshots.
+Generate the Lodestar launcher icon, Play icon, feature graphic and store screenshots.
 
 Run from the repository root:
     python tools/generate_assets.py
@@ -205,7 +205,7 @@ def store_screenshot(raw: Path, headline: str, subline: str, out: Path) -> None:
     headline_font = font("bold", 64)
     subline_font = font("regular", 29)
 
-    draw.text((72, 78), "ORBIT TIMER", font=eyebrow_font, fill=ACCENT + (255,))
+    draw.text((72, 78), "LODESTAR", font=eyebrow_font, fill=ACCENT + (255,))
 
     lines = wrap_text(draw, headline, headline_font, width - 144)
     y = 128
@@ -270,7 +270,7 @@ def feature_graphic(icon: Image.Image) -> Image.Image:
     image.alpha_composite(icon_rounded, (72, 125))
 
     draw = ImageDraw.Draw(image)
-    draw.text((376, 142), "Orbit Timer", font=font("bold", 72), fill=TEXT + (255,))
+    draw.text((376, 142), "Lodestar", font=font("bold", 72), fill=TEXT + (255,))
     draw.text((382, 232), "Focus. Breathe. Repeat.", font=font("semibold", 34), fill=ACCENT + (255,))
     draw.text((382, 292), "Pomodoro · Countdown · Stopwatch", font=font("regular", 24), fill=MUTED + (255,))
 

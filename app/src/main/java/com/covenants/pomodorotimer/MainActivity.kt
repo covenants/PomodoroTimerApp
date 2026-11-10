@@ -186,7 +186,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun exportHistory() {
-        exportLauncher.launch("orbit-sessions-${LocalDate.now()}.csv")
+        exportLauncher.launch("lodestar-sessions-${LocalDate.now()}.csv")
     }
 }
 

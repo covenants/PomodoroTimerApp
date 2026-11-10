@@ -12,6 +12,6 @@ captures/
 *.keystore
 *.jks
 keystore.properties
-!dist/orbit-timer-1.0.1.aab
-!dist/orbit-timer-1.0.1.apk
+!dist/lodestar-*.aab
+!dist/lodestar-*.apk
 !debug.keystore

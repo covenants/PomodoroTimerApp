@@ -80,12 +80,12 @@ fun PlusScreen(
             )
             IconCircleButton(
                 icon = Icons.Rounded.AutoAwesome,
-                contentDescription = "Orbit Plus",
+                contentDescription = "Lodestar Plus",
                 onClick = {},
             )
         }
         Spacer(Modifier.height(16.dp))
-        ScreenHeader(eyebrow = "Orbit Plus", title = "More ways to make focus your own.")
+        ScreenHeader(eyebrow = "Lodestar Plus", title = "More ways to make focus your own.")
         Spacer(Modifier.height(16.dp))
 
         Box(

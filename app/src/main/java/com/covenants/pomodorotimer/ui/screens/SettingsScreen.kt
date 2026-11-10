@@ -275,7 +275,7 @@ fun SettingsScreen(
             )
             DividerLine()
             SettingsRow(
-                title = "Orbit Plus",
+                title = "Lodestar Plus",
                 subtitle = "Optional upgrades. Core timers stay free.",
                 onClick = onNavigatePlus,
                 trailing = {
@@ -302,7 +302,7 @@ fun SettingsScreen(
                 .padding(14.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text("Orbit Timer 1.0.0", style = MaterialTheme.typography.bodySmall, color = colors.muted)
+            Text("Lodestar ${com.covenants.pomodorotimer.BuildConfig.VERSION_NAME}", style = MaterialTheme.typography.bodySmall, color = colors.muted)
             Text("Offline-first · no account", style = MaterialTheme.typography.bodySmall, color = colors.faint)
         }
     }

@@ -36,6 +36,8 @@ Abbreviations: **PASS** = executed and observed; **UNIT** = proven by a JVM unit
 | T-025 | `SCHEDULE_EXACT_ALARM` maxSdk | **PASS** | Manifest declares `android:maxSdkVersion="32"` alongside `USE_EXACT_ALARM` |
 | T-026 | Gentle / Chime / Bell distinct | **PASS** | Three bundled WAV resources; channel IDs bumped to `*_v2_*` so upgrades receive the new sounds |
 | T-027 | Play Console declaration docs | **PASS** | Release checklist and store listing mark exact-alarm and full-screen-intent declarations as mandatory |
+| T-028 | Brand rename to Lodestar | **PASS** | `application-label:'Lodestar'`, versionCode 3 / versionName 1.0.2; notification shows Lodestar; store title is 26 characters |
+| T-029 | Lodestar AAB/APK | **PASS** | Signed `lodestar-1.0.2.aab` and `lodestar-1.0.2.apk` committed under `dist/` |
 
 ## Executed commands and results
 
@@ -73,6 +75,8 @@ adb shell am start -n com.covenants.pomodorotimer/.MainActivity   Displayed
   timer at `00:37 remaining` instead of being ignored.
 - Migration: upgrading the installed debug build from v1 to v2 preserved the completed session.
 - Copy: `1m · 1 session` and `1 completed focus session` render correctly.
+- Brand: release 1.0.2 reports `application-label:'Lodestar'`; the completion notification shows
+  “Lodestar”; the feature graphic and store screenshots use the Lodestar wordmark.
 - No crash or ANR appeared in `adb logcat` during the exercised flows.
 
 ## Still required before a public release
